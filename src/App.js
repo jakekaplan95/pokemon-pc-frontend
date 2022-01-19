@@ -6,7 +6,7 @@ import {useState, useEffect} from "react"
 
 import {Route, Switch, Link} from "react-router-dom"
 
-import Carousel from "react-elastic-carousel";
+//import Carousel from "react-elastic-carousel";
 
 
 function App(props) {
@@ -47,7 +47,7 @@ function App(props) {
   ////////////////
 
   const getPokemons = async () => {
-    const response = await fetch(url)
+    const response = await fetch(url, {credentials: 'include'})
     console.log(response)
     const data = await response.json()
     setPokemons(data)
@@ -61,6 +61,7 @@ function App(props) {
       },
       body: JSON.stringify(newPokemon),
     })
+    console.log(response)
     getPokemons();
   }
 
@@ -77,6 +78,7 @@ function App(props) {
       },
       body: JSON.stringify(pokemon),
     });
+    console.log(response)
 
     // updated list of pokemon
     getPokemons()
@@ -86,6 +88,7 @@ function App(props) {
     const response = await fetch(url + pokemon.id + "/", {
       method: "delete",
     });
+    console.log(response)
 
     getPokemons();
     props.history.push("/");
@@ -101,6 +104,7 @@ function App(props) {
   useEffect(() => {
     getPokemons()
   }, [])
+
 
 
   /////////////////
