@@ -1,13 +1,18 @@
 import React from "react"
 import {Link} from "react-router-dom"
 
-const SinglePokemon = ({pokemons, match, edit, deletePokemon}) => {
+const SinglePokemon = ({pokemons, match}) => {
 
-     // grab the id from params
-     const id = parseInt(match.params.id)
-     // find the pokemon from array
-     const pokemon = pokemons.find((pokemon) => pokemon.id === id )
+    if (pokemons === undefined || pokemons.length === 0) {
+        return <span> Loading ...</span>
+    }
 
+    // find the pokemon from array
+    console.log("single!")
+    console.log(match)
+    const pokemon = pokemons.results.find((pokemon) => pokemon.name === match.params.name )
+    console.log(pokemons)
+    console.log(pokemon)
 
     // in-line styles
     const div = {
@@ -26,12 +31,7 @@ const SinglePokemon = ({pokemons, match, edit, deletePokemon}) => {
         <h2>{pokemon?.health}</h2>
         <h2>{pokemon?.attack}</h2>
         <h2>{pokemon?.defense}</h2>
-
-        <button onClick={(event) => deletePokemon(pokemon)}>Delete</button>
-        <button onClick={(event) => edit(pokemon)}>Edit</button>
         <Link to="/"><button> Go Back </button></Link>
-
-        <button> Add to Team </button>
      </div>
      );
 };

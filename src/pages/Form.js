@@ -36,42 +36,49 @@ const Form = ({ initialPokemon, handleSubmit, buttonLabel, history }) => {
         onChange={handleChange}
         value={formData.subject}
         name="name"
-        placeholder="name"
-      />
-      <input
-        type="integer"
-        onChange={handleChange}
-        value={formData.details}
-        name="identifier"
-        placeholder="identifier"
+        placeholder="Team Name"
       />
        <input
         type="text"
         onChange={handleChange}
         value={formData.details}
-        name="ability"
-        placeholder="ability"
+        name="pokemon1"
+        placeholder="First Pokemon"
       />
        <input
-        type="integer"
+        type="text"
         onChange={handleChange}
         value={formData.details}
-        name="health"
-        placeholder="health"
+        name="pokemon2"
+        placeholder="Second Pokemon"
       />
        <input
-        type="integer"
+        type="text"
         onChange={handleChange}
         value={formData.details}
-        name="attack"
-        placeholder="attack"
+        name="pokemon3"
+        placeholder="Third Pokemon"
       />
        <input
-        type="integer"
+        type="text"
         onChange={handleChange}
         value={formData.details}
-        name="defense"
-        placeholder="defense"
+        name="pokemon4"
+        placeholder="Fourth Pokemon"
+      />
+       <input
+        type="text"
+        onChange={handleChange}
+        value={formData.details}
+        name="pokemon5"
+        placeholder="Fifth Pokemon"
+      />
+       <input
+        type="text"
+        onChange={handleChange}
+        value={formData.details}
+        name="pokemon6"
+        placeholder="Sixth Pokemon"
       />
       <input type="submit" value={buttonLabel} />
     </form>

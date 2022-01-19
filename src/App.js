@@ -1,12 +1,13 @@
 import AllPokemon from "./pages/AllPokemon";
+import AllPokemonTeams from "./pages/AllPokemonTeams";
+import PokemonTeam from "./components/pokemonTeam"
+
 import SinglePokemon from "./pages/SinglePokemon";
 import Form from "./pages/Form"
 
 import {useState, useEffect} from "react"
 
 import {Route, Switch, Link} from "react-router-dom"
-
-//import Carousel from "react-elastic-carousel";
 
 
 function App(props) {
@@ -25,72 +26,116 @@ function App(props) {
 
   // api url
   const url ="https://pokemon-pc-backend.herokuapp.com/pokemons/"
+  const teamUrl ="https://pokemon-pc-backend.herokuapp.com/pokemonteams/"
 
   // state to hold list of pokemon
   const [pokemons, setPokemons] = useState([])
+  const [pokemonTeams, setPokemonTeams] = useState([])
+  const [images, setImages] = useState({})
 
   // obeject for null pokemon at starting point
   const nullPokemon = {
     name: "",
-    identifier: "",
-    ability: "",
-    health: "",
-    attack: "",
-    defense: "",
+    pokemon1: "",
+    pokemon2: "",
+    pokemon3: "",
+    pokemon4: "",
+    pokemon5: "",
+    pokemon6: "",
   }
-
-  // update state of pokemon to edit
-  const [targetPokemon, setTargetPokemon] = useState(nullPokemon)
-
     ///////////////
   // Functions
   ////////////////
 
   const getPokemons = async () => {
-    const response = await fetch(url, {credentials: 'include'})
-    console.log(response)
+    console.log("here");
+    console.log(pokemons);
+    if (pokemons !== undefined && pokemons !== [] && pokemons.length !== 0) {
+      console.log("returning pokemon early");
+      return;
+    }
+    const response = await fetch(url)
     const data = await response.json()
-    setPokemons(data)
+    setPokemons(data);
   }
 
-  const addPokemons = async (newPokemon) => {
-    const response = await fetch(url, {
+  const getImages = async () => {
+    console.log((images));
+    if (images !== undefined && images !== {} && Object.keys(images).length !== 0) {
+      console.log("returning images early")
+      return;
+    }
+    console.log("images rendering below");
+    const response = await fetch(url)
+    const data = await response.json()
+    console.log("got data");
+    console.log(data.results);
+    var imgs = {};
+    for (var idx in data.results) {
+      var datum = data.results[idx];
+      console.log("data ");
+      var poke = await findPokemon(datum.name);
+      imgs[datum.name] = ({src: poke.sprites.front_default});
+    }
+    console.log("Rendered");
+    console.log(imgs);
+    setImages(imgs);
+  }
+
+  const findPokemon = async (pokemonName) => {
+    const response = await fetch(url + pokemonName);
+    const data = await response.json();
+    return data;
+  }
+
+
+  const getPokemonTeams = async (force) => {
+    console.log("Teams " + pokemonTeams)
+    console.log(pokemonTeams);
+    if (pokemonTeams !== undefined && pokemonTeams !== [] && pokemonTeams.length !== 0 && !force) {
+      console.log("returning teams early");
+      return;
+    }
+    console.log("here for teams");
+    const response = await fetch(teamUrl);
+    const data = await response.json();
+    setPokemonTeams(data);
+  }
+
+  const addPokemonTeam = async (newTeam) => {
+    var data = {};
+    data.pokemonteam = newTeam;
+    console.log(data);
+    const response = await fetch(teamUrl, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newPokemon),
+      body: JSON.stringify(data),
     })
     console.log(response)
-    getPokemons();
+    await getPokemonTeams(true);
   }
 
-  const getTargetPokemon = (pokemon) => {
-    setTargetPokemon(pokemon);
-    props.history.push("/edit");
-  }
-
-  const updatePokemon = async (pokemon) => {
-    const response = await fetch(url + pokemon.id + "/", {
+  const editTeam = async (team) => {
+    var newTeam = {"pokemonteam": {"name": document.getElementById("teamName").value}};
+    await fetch(teamUrl + team.id + "/", {
       method: "put",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(pokemon),
+      body: JSON.stringify(newTeam),
     });
-    console.log(response)
-
     // updated list of pokemon
-    getPokemons()
+    await getPokemonTeams(true);
   }
 
-  const deletePokemon = async (pokemon) => {
-    const response = await fetch(url + pokemon.id + "/", {
+  const deleteTeam = async (teamId) => {
+    const response = await fetch(teamUrl + teamId + "/", {
       method: "delete",
     });
     console.log(response)
-
-    getPokemons();
+    await getPokemonTeams(true);
     props.history.push("/");
   };
 
@@ -102,9 +147,11 @@ function App(props) {
   // make the api call when the component
   // loads only the first time
   useEffect(() => {
-    getPokemons()
-  }, [])
-
+    console.log("useEffect");
+    getPokemons();
+    getPokemonTeams(true);
+    getImages();
+  })
 
 
   /////////////////
@@ -114,31 +161,76 @@ function App(props) {
     <div className="App">
       <h1 style={h1}>Pokemon!</h1>
       <Link to="/new">
-        <button style={button}>Create New Pokemon</button>
+        <button style={button}>Create New Pokemon Team</button>
       </Link>
       <Switch>
 
         {/* Pokemon Index */}
         <Route
-        exact path="/"
+        exact path="/pokedex"
         render={(rp) => {
+          if (pokemons === undefined || pokemons === []) {
+            getPokemons();
+          }
+          rp.pokemons = pokemons;
           return <AllPokemon {...rp}
-          pokemons={pokemons}
           />;
         }}
         />
 
         {/* Show one Pokemon */}
         <Route
-          path="/pokemons/:id"
+          path="/pokedex/:name"
           render={(rp) => {
+            var input = {};
+            input.pokemons = pokemons;
+            input.match = rp.match
             return <SinglePokemon
-            {...rp}
-            pokemons={pokemons}
-            edit={getTargetPokemon}
-            deletePokemon={deletePokemon}
+            {...input}
             />;
           }}
+        />
+
+        {/* Pokemon Teams Index */}
+        <Route
+        exact path="/"
+        render={(rp) => {
+          getPokemonTeams(false);
+          rp.pokemonteams = pokemonTeams;
+          return <AllPokemonTeams {...rp}
+          />;
+        }}
+        />
+        {/* Pokemon Teams Index */}
+        <Route
+        exact path="/pokemonteams"
+        render={(rp) => {
+          getPokemonTeams(false);
+          rp.pokemonteams = pokemonTeams;
+          return <AllPokemonTeams {...rp}
+          />;
+        }}
+        />
+
+        <Route
+        exact path="/pokemonteams/:id"
+        render={(rp) => {
+          var pokeTeam;
+          pokemonTeams.forEach(team => {
+            if (team.id === rp.match.params.id) {
+              pokeTeam = team;
+            }
+          });
+          const input = {};
+          input.pokemonTeam = pokeTeam;
+          input.deleteTeam = deleteTeam;
+          input.editTeam = editTeam;
+          getPokemons();
+          input.pokemons = pokemons;
+          input.images = images;
+          return <PokemonTeam {...input}
+          />;
+        }}
         />
 
         {/* Create and Edit Form */}
@@ -148,23 +240,12 @@ function App(props) {
           render={(rp) => {
             return <Form {...rp}
             initialPokemon={nullPokemon}
-            handleSubmit={addPokemons}
-            buttonLabel="create pokemon"
+            handleSubmit={addPokemonTeam}
+            buttonLabel="create team"
           />;
           }}
         />
 
-        <Route
-          path="/edit"
-          render={(rp) => {
-            return <Form
-            {...rp}
-            initialPokemon={targetPokemon}
-            handleSubmit={updatePokemon}
-            buttonLabel="Make the edit"
-            />;
-          }}
-        />
       </Switch>
     </div>
   );

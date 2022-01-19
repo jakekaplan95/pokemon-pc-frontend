@@ -13,7 +13,7 @@ const Pokemon = ({pokemon}) => {
     }
 
     return <div syle={div}>
-        <Link to={`/pokemon/${pokemon.id}`}>
+        <Link to={`/pokedex/${pokemon.name}`}>
             <h1>{pokemon.name}</h1>
         </Link>
             <h2>{pokemon.identifier}</h2>
