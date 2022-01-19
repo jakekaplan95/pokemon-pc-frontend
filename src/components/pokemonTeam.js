@@ -85,6 +85,7 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
     return <div style={div}>
         <button onClick={(event) => deleteTeam(pokemonTeam.id)}>Delete</button>
         <button onClick={(event) => editTeam(pokemonTeam)}>Rename</button>
+        <Link to="/"><button> Go Back </button></Link>
 
         <Carousel breakPoints={breakPoints}>
             {toRender.map((image, index) => {
