@@ -10,6 +10,8 @@ import {useState, useEffect} from "react"
 import {Route, Switch, Link} from "react-router-dom"
 
 
+var images = {};
+
 function App(props) {
 
   // in-line styles
@@ -31,7 +33,6 @@ function App(props) {
   // state to hold list of pokemon
   const [pokemons, setPokemons] = useState([])
   const [pokemonTeams, setPokemonTeams] = useState([])
-  const [images, setImages] = useState({})
 
   // obeject for null pokemon at starting point
   const nullPokemon = {
@@ -56,30 +57,30 @@ function App(props) {
     }
     const response = await fetch(url)
     const data = await response.json()
+    getImages(data);
     setPokemons(data);
   }
 
-  const getImages = async () => {
+  const getImages = (data) => {
     console.log((images));
     if (images !== undefined && images !== {} && Object.keys(images).length !== 0) {
       console.log("returning images early")
       return;
     }
     console.log("images rendering below");
-    const response = await fetch(url)
-    const data = await response.json()
     console.log("got data");
     console.log(data.results);
-    var imgs = {};
     for (var idx in data.results) {
       var datum = data.results[idx];
-      console.log("data ");
-      var poke = await findPokemon(datum.name);
-      imgs[datum.name] = ({src: poke.sprites.front_default});
+      console.log("data for " + datum.name);
+      if (!(datum.name in images)) {
+        // eslint-disable-next-line no-loop-func
+        findPokemon(datum.name).then((poke) => {
+          images[datum.name] = ({src: poke.sprites.front_default});
+          console.log(images);
+        });
+      }
     }
-    console.log("Rendered");
-    console.log(imgs);
-    setImages(imgs);
   }
 
   const findPokemon = async (pokemonName) => {
@@ -149,8 +150,7 @@ function App(props) {
   useEffect(() => {
     console.log("useEffect");
     getPokemons();
-    getPokemonTeams(true);
-    getImages();
+    getPokemonTeams(false);
   })
 
 
@@ -215,19 +215,14 @@ function App(props) {
         <Route
         exact path="/pokemonteams/:id"
         render={(rp) => {
-          var pokeTeam;
-          pokemonTeams.forEach(team => {
-            if (team.id === rp.match.params.id) {
-              pokeTeam = team;
-            }
-          });
           const input = {};
-          input.pokemonTeam = pokeTeam;
+          input.pokemonTeams = pokemonTeams;
           input.deleteTeam = deleteTeam;
           input.editTeam = editTeam;
-          getPokemons();
-          input.pokemons = pokemons;
+          console.log(images);
+          console.log("loading team");
           input.images = images;
+          input.teamId = rp.match.params.id;
           return <PokemonTeam {...input}
           />;
         }}

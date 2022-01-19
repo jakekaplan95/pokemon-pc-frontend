@@ -3,10 +3,24 @@ import {Link} from "react-router-dom"
 import Carousel from "react-elastic-carousel";
 
 
-const PokemonTeam = ({pokemonTeam, images, deleteTeam, editTeam}) => {
+const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
     console.log("in team");
     console.log(images);
-    if (pokemonTeam === undefined || images === undefined || Object.keys(images).length === 0) {
+    console.log(pokemonTeams);
+    console.log(teamId);
+
+    if (pokemonTeams === undefined) {
+        return <span> Loading ...</span>
+    }
+
+    var pokemonTeam;
+    pokemonTeams.forEach(team => {
+      if (team.id === parseInt(teamId)) {
+        pokemonTeam = team;
+      }
+    });
+    console.log(pokemonTeam);
+    if (pokemonTeam === undefined) {
         return <span> Loading... </span>;
     }
 
@@ -19,12 +33,45 @@ const PokemonTeam = ({pokemonTeam, images, deleteTeam, editTeam}) => {
     }
     console.log(images);
     var toRender = [];
-    toRender.push(images[pokemonTeam.pokemon1]);
-    toRender.push(images[pokemonTeam.pokemon2]);
-    toRender.push(images[pokemonTeam.pokemon3]);
-    toRender.push(images[pokemonTeam.pokemon4]);
-    toRender.push(images[pokemonTeam.pokemon5]);
-    toRender.push(images[pokemonTeam.pokemon6]);
+    if (images === undefined || Object.keys(images).length === 0) {
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+    } else {
+        if (images[pokemonTeam.pokemon1] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon1]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+        if (images[pokemonTeam.pokemon2] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon2]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+        if (images[pokemonTeam.pokemon3] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon3]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+        if (images[pokemonTeam.pokemon4] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon4]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+        if (images[pokemonTeam.pokemon5] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon5]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+        if (images[pokemonTeam.pokemon6] !== undefined) {
+            toRender.push(images[pokemonTeam.pokemon6]);
+        } else {
+            toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
+        }
+    }
     console.log(toRender);
 
     const breakPoints = [
