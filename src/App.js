@@ -47,7 +47,7 @@ function App(props) {
           // disable connecting and enable minting
           // eslint-disable-next-line no-undef
           ethereum.request({ method: 'eth_chainId' }).then((chainId) => {
-              if (chainId != ALLOWED_CHAIN) {
+              if (chainId !== ALLOWED_CHAIN) {
                   alert("Detected cryptocurrency chain is not allowed for use with this site. Please change the chain to Rinkeby.")
               }
           });
@@ -60,6 +60,9 @@ function App(props) {
       // Correctly handling chain changes can be complicated, so we just reload
       window.location.reload();
   }
+
+  // eslint-disable-next-line no-undef
+  ethereum.on("chainChanged", chainChanged);
 
 
 
