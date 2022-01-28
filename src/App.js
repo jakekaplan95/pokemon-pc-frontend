@@ -21,8 +21,10 @@ function App(props) {
       if (!window.ethereum) {
           alert("There were no ethereum utilities detected in your browser. Please install MetaMask or another web3 wallet extension, and ensure it is enabled.");
       }
+      // eslint-disable-next-line no-undef
       ethereum.request({ method: 'eth_requestAccounts' })
       .then(() => {
+          // eslint-disable-next-line no-undef
           ethereum.request({ method: 'eth_accounts' })
           .then(accountsChanged)
           .catch((err) => {
@@ -43,6 +45,7 @@ function App(props) {
       } else if (accounts[0] !== currentAccount) {
           currentAccount = accounts[0];
           // disable connecting and enable minting
+          // eslint-disable-next-line no-undef
           ethereum.request({ method: 'eth_chainId' }).then((chainId) => {
               if (chainId != ALLOWED_CHAIN) {
                   alert("Detected cryptocurrency chain is not allowed for use with this site. Please change the chain to Rinkeby.")
