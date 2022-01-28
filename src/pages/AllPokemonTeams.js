@@ -18,7 +18,6 @@ const button = {
 
 
 const AllPokemonTeams = (props) => {
-    console.log(props);
     if (!props.pokemonteams || props.pokemonteams.length === 0) {
         return <span> Loading... </span>;
     }
@@ -30,7 +29,7 @@ const AllPokemonTeams = (props) => {
             console.log(team);
             return (<div syle={divStyle}>
             <Link to={`/pokemonteams/${team.id}`}>
-                <h1>{team.name}</h1>
+                <h2>{team.name}</h2>
             </Link>
             </div>);
         })}

@@ -10,12 +10,16 @@ import {useState, useEffect} from "react"
 import {Route, Switch, Link} from "react-router-dom"
 
 
+
+
 var images = {};
 
 function App(props) {
 var currentAccount = "";
 
   <div styles={{backgroundImage: "https://cdn.wallpapersafari.com/26/82/41PKyd.jpg"}}></div>
+
+
 
   const ALLOWED_CHAIN = "0x4"; // test chain rinkeby
 
@@ -58,7 +62,6 @@ var currentAccount = "";
               }
           });
       }
-      console.log("current account " + currentAccount);
   }
 
 
@@ -79,7 +82,6 @@ var currentAccount = "";
     findPokemon(pokeId).then( (pokeData) => {
       console.log(pokeData);
       var data = getData(pokeData.id);
-      console.log(currentAccount);
       // eslint-disable-next-line no-undef
       ethereum.request({ method: 'eth_accounts' }).then((accounts) => {
         var myData = {
@@ -101,8 +103,11 @@ var currentAccount = "";
   // in-line styles
   const h1 = {
     textAlign: "center",
-    margin: "10px"
-  };
+    margin: "10px",
+    fontFamily: "Archivo Black",
+    color: "whitesmoke",
+}
+
 
   const button = {
     backgroundColor: "red",
@@ -160,16 +165,13 @@ var currentAccount = "";
 
   const findPokemon = async (pokemonName) => {
     const response = await fetch(url + pokemonName);
-    console.log(response);
     const data = await response.json();
     return data;
   }
 
   const findAndSetDetailedPokemon = async () => {
-    console.log("set detailed pokemon")
     // eslint-disable-next-line eqeqeq
     if (Object.keys(detailedPokemon).length != 0) {
-      console.log("set detailed pokemon returns early")
       return;
     }
     var tmp = {};
@@ -177,8 +179,6 @@ var currentAccount = "";
       var tmpPoke = await findPokemon(i);
       tmp[i] = tmpPoke;
     }
-    console.log("set detailed pokemon done")
-    console.log(tmp)
     setDetailedPokemon(tmp);
   }
 
@@ -332,12 +332,12 @@ var currentAccount = "";
         <Route
           path="/opensea/:id"
           render={(rp) => {
-            var currentPokemon = detailedPokemon[rp.match.params.id];
-            console.log(detailedPokemon);
-            console.log(currentPokemon);
-            return JSON.stringify({"name":currentPokemon?.name,"attributes":[{"trait_type":"Ability","value":currentPokemon?.ability}],"image":currentPokemon?.sprites.front_default});
+            var toRedirect = "https://jakekaplan95.github.io/metadata/" + rp.match.params.id;
+            window.location.href = toRedirect;
+            return null;
           }}
-          />;
+          >
+          </Route>;
 
       </Switch>
     </div>
