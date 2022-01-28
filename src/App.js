@@ -87,7 +87,7 @@ var currentAccount = "";
         var myData = {
           from: accounts[0],
           value: "0x0",
-          to: "0x9Ecae4A89c6d57700C73AdC166fE8aD465a7a178",
+          to: "0x8fcb5Fc258C1621DC012B10c3bf25F1910f75172",
           data: data
         }
         console.log(myData);
