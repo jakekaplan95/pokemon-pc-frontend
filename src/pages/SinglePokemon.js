@@ -8,11 +8,7 @@ const SinglePokemon = ({pokemons, match}) => {
     }
 
     // find the pokemon from array
-    console.log("single!")
-    console.log(match)
     const pokemon = pokemons.results.find((pokemon) => pokemon.name === match.params.name )
-    console.log(pokemons)
-    console.log(pokemon)
 
     // in-line styles
     const div = {

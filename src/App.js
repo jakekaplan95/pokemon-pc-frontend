@@ -13,9 +13,15 @@ import {Route, Switch, Link} from "react-router-dom"
 var images = {};
 
 function App(props) {
+var currentAccount = "";
 
-  var currentAccount = "";
+  <div styles={{backgroundImage: "https://cdn.wallpapersafari.com/26/82/41PKyd.jpg"}}></div>
+
   const ALLOWED_CHAIN = "0x4"; // test chain rinkeby
+
+  const dataRoot = "0x78f1e763000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000013";
+
+  const dataEnd = "00000000000000000000000000000000000000000000000000000000000000";
 
   function connectMetamask() {
       if (!window.ethereum) {
@@ -52,6 +58,7 @@ function App(props) {
               }
           });
       }
+      console.log("current account " + currentAccount);
   }
 
 
@@ -64,6 +71,31 @@ function App(props) {
   // eslint-disable-next-line no-undef
   ethereum.on("chainChanged", chainChanged);
 
+  function getData(pokeId) {
+    return dataRoot + pokeId + dataEnd;
+  }
+
+  function doMint(pokeId) {
+    findPokemon(pokeId).then( (pokeData) => {
+      console.log(pokeData);
+      var data = getData(pokeData.id);
+      console.log(currentAccount);
+      // eslint-disable-next-line no-undef
+      ethereum.request({ method: 'eth_accounts' }).then((accounts) => {
+        var myData = {
+          from: accounts[0],
+          value: "0x0",
+          to: "0x9Ecae4A89c6d57700C73AdC166fE8aD465a7a178",
+          data: data
+        }
+        console.log(myData);
+        // eslint-disable-next-line no-undef
+        ethereum.request({method: 'eth_sendTransaction', params: [myData]}).then( (hash) => {
+          alert("Your trasaction hash is " + hash);
+        });
+      })
+    })
+  };
 
 
   // in-line styles
@@ -85,6 +117,7 @@ function App(props) {
   // state to hold list of pokemon
   const [pokemons, setPokemons] = useState([])
   const [pokemonTeams, setPokemonTeams] = useState([])
+  const [detailedPokemon, setDetailedPokemon] = useState({})
 
   // obeject for null pokemon at starting point
   const nullPokemon = {
@@ -101,55 +134,59 @@ function App(props) {
   ////////////////
 
   const getPokemons = async () => {
-    console.log("here");
-    console.log(pokemons);
+
     if (pokemons !== undefined && pokemons !== [] && pokemons.length !== 0) {
-      console.log("returning pokemon early");
       return;
     }
     const response = await fetch(url)
     const data = await response.json()
-    getImages(data);
+    await getImages(data);
     setPokemons(data);
   }
 
-  const getImages = (data) => {
-    console.log((images));
+  const getImages = async (data) => {
     if (images !== undefined && images !== {} && Object.keys(images).length !== 0) {
-      console.log("returning images early")
       return;
     }
-    console.log("images rendering below");
-    console.log("got data");
-    console.log(data.results);
     for (var idx in data.results) {
       var datum = data.results[idx];
-      console.log("data for " + datum.name);
       if (!(datum.name in images)) {
         // eslint-disable-next-line no-loop-func
-        findPokemon(datum.name).then((poke) => {
-          images[datum.name] = ({src: poke.sprites.front_default});
-          console.log(images);
-        });
+        var poke = await findPokemon(datum.name);
+        images[datum.name] = ({src: poke.sprites.front_default});
       }
     }
   }
 
   const findPokemon = async (pokemonName) => {
     const response = await fetch(url + pokemonName);
+    console.log(response);
     const data = await response.json();
     return data;
   }
 
-
-  const getPokemonTeams = async (force) => {
-    console.log("Teams " + pokemonTeams)
-    console.log(pokemonTeams);
-    if (pokemonTeams !== undefined && pokemonTeams !== [] && pokemonTeams.length !== 0 && !force) {
-      console.log("returning teams early");
+  const findAndSetDetailedPokemon = async () => {
+    console.log("set detailed pokemon")
+    // eslint-disable-next-line eqeqeq
+    if (Object.keys(detailedPokemon).length != 0) {
+      console.log("set detailed pokemon returns early")
       return;
     }
-    console.log("here for teams");
+    var tmp = {};
+    for (var i = 1; i < 152; i+=1) {
+      var tmpPoke = await findPokemon(i);
+      tmp[i] = tmpPoke;
+    }
+    console.log("set detailed pokemon done")
+    console.log(tmp)
+    setDetailedPokemon(tmp);
+  }
+
+
+  const getPokemonTeams = async (force) => {
+    if (pokemonTeams !== undefined && pokemonTeams !== [] && pokemonTeams.length !== 0 && !force) {
+      return;
+    }
     const response = await fetch(teamUrl);
     const data = await response.json();
     setPokemonTeams(data);
@@ -158,7 +195,7 @@ function App(props) {
   const addPokemonTeam = async (newTeam) => {
     var data = {};
     data.pokemonteam = newTeam;
-    console.log(data);
+    // eslint-disable-next-line no-unused-vars
     const response = await fetch(teamUrl, {
       method: "post",
       headers: {
@@ -166,7 +203,6 @@ function App(props) {
       },
       body: JSON.stringify(data),
     })
-    console.log(response)
     await getPokemonTeams(true);
   }
 
@@ -200,9 +236,9 @@ function App(props) {
   // make the api call when the component
   // loads only the first time
   useEffect(() => {
-    console.log("useEffect");
     getPokemons();
     getPokemonTeams(false);
+    findAndSetDetailedPokemon();
   })
 
 
@@ -211,7 +247,7 @@ function App(props) {
   /////////////////
   return (
     <div className="App">
-      <h1 style={h1}>Pokemon!</h1>
+      <h1 style={h1}>Pokemon on the Blockchain!</h1>
       <Link to="/new">
         <button style={button}>Create New Pokemon Team</button>
       </Link>
@@ -272,10 +308,9 @@ function App(props) {
           input.pokemonTeams = pokemonTeams;
           input.deleteTeam = deleteTeam;
           input.editTeam = editTeam;
-          console.log(images);
-          console.log("loading team");
           input.images = images;
           input.teamId = rp.match.params.id;
+          input.doMint = doMint;
           return <PokemonTeam {...input}
           />;
         }}
@@ -293,6 +328,16 @@ function App(props) {
           />;
           }}
         />
+
+        <Route
+          path="/opensea/:id"
+          render={(rp) => {
+            var currentPokemon = detailedPokemon[rp.match.params.id];
+            console.log(detailedPokemon);
+            console.log(currentPokemon);
+            return JSON.stringify({"name":currentPokemon?.name,"attributes":[{"trait_type":"Ability","value":currentPokemon?.ability}],"image":currentPokemon?.sprites.front_default});
+          }}
+          />;
 
       </Switch>
     </div>

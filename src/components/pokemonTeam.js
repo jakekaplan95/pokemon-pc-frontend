@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import Carousel from "react-elastic-carousel";
 
 
-const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
+const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam, doMint}) => {
     if (pokemonTeams === undefined) {
         return <span> Loading ...</span>
     }
@@ -25,6 +25,13 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
         margin: "10px auto",
         width: "80%"
     }
+
+    const button = {
+        backgroundColor: "red",
+        display: "block",
+        margin: "auto"
+      }
+
     var toRender = [];
     if (images === undefined || Object.keys(images).length === 0) {
         toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
@@ -75,9 +82,9 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
 
 
     return <div style={div}>
-        <button onClick={(event) => deleteTeam(pokemonTeam.id)}>Delete</button>
-        <button onClick={(event) => editTeam(pokemonTeam)}>Rename</button>
-        <Link to="/"><button> Go Back </button></Link>
+        <button style={button} onClick={(event) => deleteTeam(pokemonTeam.id)}>Delete</button>
+        <button style={button} onClick={(event) => editTeam(pokemonTeam)}>Rename</button>
+        <Link to="/"><button style={button}> Go Back </button></Link>
 
         <Carousel breakPoints={breakPoints}>
             {toRender.map((image, index) => {
@@ -103,22 +110,22 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
         </Link>
         <Link to={`/pokedex/${pokemonTeam.pokemon1}`}>
             <h2>{pokemonTeam.pokemon1}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon1)}>Mint {pokemonTeam.pokemon1}</button>
         <Link to={`/pokedex/${pokemonTeam.pokemon2}`}>
             <h2>{pokemonTeam.pokemon2}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon2xt)}>Mint {pokemonTeam.pokemon2}</button>
         <Link to={`/pokedex/${pokemonTeam.pokemon3}`}>
             <h2>{pokemonTeam.pokemon3}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon3)}>Mint {pokemonTeam.pokemon3}</button>
         <Link to={`/pokedex/${pokemonTeam.pokemon4}`}>
             <h2>{pokemonTeam.pokemon4}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon4)}>Mint {pokemonTeam.pokemon4}</button>
         <Link to={`/pokedex/${pokemonTeam.pokemon5}`}>
             <h2>{pokemonTeam.pokemon5}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon5)}>Mint {pokemonTeam.pokemon5}</button>
         <Link to={`/pokedex/${pokemonTeam.pokemon6}`}>
             <h2>{pokemonTeam.pokemon6}</h2>
-        </Link>
+        </Link><button style={button} onClick={() => doMint(pokemonTeam.pokemon6)}>Mint {pokemonTeam.pokemon6}</button>
         </div>
 }
 

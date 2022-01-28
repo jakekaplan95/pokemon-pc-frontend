@@ -10,6 +10,12 @@ const divStyle = {
     width: "80%"
 }
 
+const button = {
+    backgroundColor: "red",
+    display: "block",
+    margin: "auto"
+  }
+
 
 const AllPokemonTeams = (props) => {
     console.log(props);
@@ -19,7 +25,7 @@ const AllPokemonTeams = (props) => {
     console.log("has value =" + props.pokemonteams)
 
     return (<div>
-        <button onClick={(event) => props.connectMetaMask}>Connect to Metamask</button>
+        <button style={button} onClick={props.connectMetamask}>Connect to Metamask!</button>
         {props.pokemonteams.map((team)=> {
             console.log(team);
             return (<div syle={divStyle}>
