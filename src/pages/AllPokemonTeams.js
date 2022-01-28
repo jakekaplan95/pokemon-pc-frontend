@@ -1,6 +1,7 @@
 import React from "react"
 import {Link} from "react-router-dom"
 
+
 // in-line styles
 const divStyle = {
     textAlign: "center",
@@ -17,14 +18,17 @@ const AllPokemonTeams = (props) => {
     }
     console.log("has value =" + props.pokemonteams)
 
-    return props.pokemonteams.map((team)=> {
-        console.log(team);
-        return <div syle={divStyle}>
-        <Link to={`/pokemonteams/${team.id}`}>
-            <h1>{team.name}</h1>
-        </Link>
-        </div>;
-    })
+    return (<div>
+        <button onClick={(event) => props.connectMetaMask}>Connect to Metamask</button>
+        {props.pokemonteams.map((team)=> {
+            console.log(team);
+            return (<div syle={divStyle}>
+            <Link to={`/pokemonteams/${team.id}`}>
+                <h1>{team.name}</h1>
+            </Link>
+            </div>);
+        })}
+    </div>)
 }
 
 export default AllPokemonTeams

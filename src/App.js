@@ -14,6 +14,52 @@ var images = {};
 
 function App(props) {
 
+  var currentAccount = "";
+  const ALLOWED_CHAIN = "0x4"; // test chain rinkeby
+
+  function connectMetamask() {
+      if (!window.ethereum) {
+          alert("There were no ethereum utilities detected in your browser. Please install MetaMask or another web3 wallet extension, and ensure it is enabled.");
+      }
+      ethereum.request({ method: 'eth_requestAccounts' })
+      .then(() => {
+          ethereum.request({ method: 'eth_accounts' })
+          .then(accountsChanged)
+          .catch((err) => {
+              // Some unexpected error.
+              // For backwards compatibility reasons, if no accounts are available,
+              // eth_accounts will return an empty array.
+              console.error(err);
+          });
+      });
+  }
+
+  function accountsChanged(accounts) {
+      if (accounts.length === 0) {
+          // MetaMask is locked or the user has not connected any accounts
+          // disable minting and enable connecting
+          currentAccount = "";
+          alert("No accounts detected in wallet. Please connect an account and try again.");
+      } else if (accounts[0] !== currentAccount) {
+          currentAccount = accounts[0];
+          // disable connecting and enable minting
+          ethereum.request({ method: 'eth_chainId' }).then((chainId) => {
+              if (chainId != ALLOWED_CHAIN) {
+                  alert("Detected cryptocurrency chain is not allowed for use with this site. Please change the chain to Rinkeby.")
+              }
+          });
+      }
+  }
+
+
+  function chainChanged(chainId) {
+      // Handle the new chain.
+      // Correctly handling chain changes can be complicated, so we just reload
+      window.location.reload();
+  }
+
+
+
   // in-line styles
   const h1 = {
     textAlign: "center",
@@ -197,6 +243,7 @@ function App(props) {
         render={(rp) => {
           getPokemonTeams(false);
           rp.pokemonteams = pokemonTeams;
+          rp.connectMetamask = connectMetamask;
           return <AllPokemonTeams {...rp}
           />;
         }}

@@ -4,11 +4,6 @@ import Carousel from "react-elastic-carousel";
 
 
 const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
-    console.log("in team");
-    console.log(images);
-    console.log(pokemonTeams);
-    console.log(teamId);
-
     if (pokemonTeams === undefined) {
         return <span> Loading ...</span>
     }
@@ -19,7 +14,6 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
         pokemonTeam = team;
       }
     });
-    console.log(pokemonTeam);
     if (pokemonTeam === undefined) {
         return <span> Loading... </span>;
     }
@@ -31,7 +25,6 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
         margin: "10px auto",
         width: "80%"
     }
-    console.log(images);
     var toRender = [];
     if (images === undefined || Object.keys(images).length === 0) {
         toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
@@ -72,7 +65,6 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam}) => {
             toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
         }
     }
-    console.log(toRender);
 
     const breakPoints = [
         { width: 1, itemsToShow: 1 },
