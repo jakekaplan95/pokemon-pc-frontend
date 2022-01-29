@@ -104,7 +104,7 @@ var currentAccount = "";
   const h1 = {
     textAlign: "center",
     margin: "10px",
-    fontFamily: "Archivo Black",
+    fontFamily: "Permanent Marker",
     color: "whitesmoke",
 }
 

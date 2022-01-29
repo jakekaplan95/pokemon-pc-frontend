@@ -32,6 +32,13 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam, doMint
         margin: "auto"
       }
 
+    const h1 = {
+        textAlign: "center",
+        margin: "10px",
+        fontFamily: "Archivo Black",
+        color: "whitesmoke",
+    }
+
     var toRender = [];
     if (images === undefined || Object.keys(images).length === 0) {
         toRender.push({src: "https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg"});
@@ -106,7 +113,7 @@ const PokemonTeam = ({teamId, pokemonTeams, images, deleteTeam, editTeam, doMint
 
 
         <Link to={`/pokemonteams/${pokemonTeam.id}`}>
-            <input id="teamName" defaultValue={pokemonTeam.name} />
+            <input style={h1} id="teamName" defaultValue={pokemonTeam.name} />
         </Link>
         <Link to={`/pokedex/${pokemonTeam.pokemon1}`}>
             <h2>{pokemonTeam.pokemon1}</h2>
